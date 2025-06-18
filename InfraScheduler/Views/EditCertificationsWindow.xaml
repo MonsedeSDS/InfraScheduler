@@ -1,0 +1,88 @@
+<Window x:Class="InfraScheduler.Views.EditCertificationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Manage Certification Database" Height="400" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Add New Certification -->
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" 
+                     Text="{Binding NewCertification, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="5"
+                     Margin="0,0,10,0"/>
+            <Button Grid.Column="1" 
+                    Content="Add New" 
+                    Command="{Binding AddNewCertificationCommand}"
+                    Padding="5"
+                    MinWidth="80"/>
+        </Grid>
+
+        <!-- Certifications List -->
+        <DataGrid Grid.Row="1" 
+                  ItemsSource="{Binding AllCertifications}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  CanUserReorderColumns="False"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  GridLinesVisibility="Horizontal"
+                  BorderThickness="0"
+                  HorizontalGridLinesBrush="#E0E0E0"
+                  VerticalScrollBarVisibility="Auto"
+                  MinRowHeight="30">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Certification Name" 
+                                  Binding="{Binding}" 
+                                  Width="*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="Wrap"/>
+                            <Setter Property="Padding" Value="5"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTemplateColumn Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Remove" 
+                                    Command="{Binding DataContext.RemoveCertificationCommand, 
+                                            RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}"
+                                    Padding="5"
+                                    Margin="5"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,10,0,0">
+            <Button Content="Save" 
+                    Command="{Binding SaveCommand}" 
+                    Width="80" 
+                    Margin="0,0,10,0"
+                    Padding="5"/>
+            <Button Content="Cancel" 
+                    Command="{Binding CancelCommand}" 
+                    Width="80"
+                    Padding="5"/>
+        </StackPanel>
+    </Grid>
+</Window> 

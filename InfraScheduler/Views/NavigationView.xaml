@@ -1,0 +1,112 @@
+<UserControl x:Class="InfraScheduler.Views.NavigationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:InfraScheduler.Views"
+             xmlns:vm="clr-namespace:InfraScheduler.ViewModels"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Text="InfraScheduler" 
+                   FontSize="20" 
+                   FontWeight="Bold" 
+                   Margin="10"
+                   HorizontalAlignment="Center"/>
+
+        <!-- Navigation Menu -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Core Master Data -->
+                <Expander Header="Core Master Data" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Clients" Command="{Binding ShowClientViewCommand}" Margin="0,2"/>
+                        <Button Content="Subcontractors" Command="{Binding ShowSubcontractorViewCommand}" Margin="0,2"/>
+                        <Button Content="Sites" Command="{Binding ShowSiteViewCommand}" Margin="0,2"/>
+                        <Button Content="Site Tenants" Command="{Binding ShowSiteTenantViewCommand}" Margin="0,2"/>
+                        <Button Content="Site Owners" Command="{Binding ShowSiteOwnerViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Human Resources -->
+                <Expander Header="Human Resources" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Technicians" Command="{Binding ShowTechnicianViewCommand}" Margin="0,2"/>
+                        <Button Content="Technician Assignments" Command="{Binding ShowTechnicianAssignmentViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Material Resources -->
+                <Expander Header="Material Resources" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Materials" Command="{Binding ShowMaterialViewCommand}" Margin="0,2"/>
+                        <Button Content="Material Resources" Command="{Binding ShowMaterialResourceViewCommand}" Margin="0,2"/>
+                        <Button Content="Material Reservations" Command="{Binding ShowMaterialReservationViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Jobs &amp; Tasks -->
+                <Expander Header="Jobs &amp; Tasks" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Jobs" Command="{Binding ShowJobViewCommand}" Margin="0,2"/>
+                        <Button Content="Job Tasks" Command="{Binding ShowJobTaskViewCommand}" Margin="0,2"/>
+                        <Button Content="Task Dependencies" Command="{Binding ShowTaskDependencyViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Resource Scheduling &amp; Forecast -->
+                <Expander Header="Resource Scheduling &amp; Forecast" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Resource Calendar" Command="{Binding ShowResourceCalendarViewCommand}" Margin="0,2"/>
+                        <Button Content="Allocations" Command="{Binding ShowAllocationViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Financial -->
+                <Expander Header="Financial" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Financial Transactions" Command="{Binding ShowFinancialTransactionViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Activity Logs -->
+                <Expander Header="Activity Logs" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Activity Log" Command="{Binding ShowActivityLogViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- User Admin -->
+                <Expander Header="User Admin" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Users" Command="{Binding ShowUserViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Scheduling -->
+                <Expander Header="Scheduling" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <Button Content="Schedule" Command="{Binding ShowScheduleViewCommand}" Margin="0,2"/>
+                        <Button Content="Auto Scheduler" Command="{Binding ShowAutoSchedulerViewCommand}" Margin="0,2"/>
+                        <Button Content="Material Auto Reservation" Command="{Binding ShowMaterialAutoReservationViewCommand}" Margin="0,2"/>
+                        <Button Content="Integrated Scheduler" Command="{Binding ShowIntegratedSchedulerViewCommand}" Margin="0,2"/>
+                        <Button Content="Gantt View" Command="{Binding ShowGanttViewCommand}" Margin="0,2"/>
+                    </StackPanel>
+                </Expander>
+
+                <!-- Testing -->
+                <Expander Header="Testing" IsExpanded="True">
+                    <StackPanel Margin="10,0,0,0">
+                        <!-- Remove Test Runner button -->
+                    </StackPanel>
+                </Expander>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl> 

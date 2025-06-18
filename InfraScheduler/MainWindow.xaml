@@ -1,0 +1,40 @@
+﻿<Window x:Class="InfraScheduler.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="InfraScheduler"
+        Width="1280"
+        Height="720"
+        MinWidth="1280"
+        MaxWidth="1280"
+        MinHeight="720"
+        MaxHeight="720"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        SizeToContent="Manual">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Background="LightGray" Margin="10">
+            <Button Content="Clients" Margin="0,5" Command="{Binding ShowClientViewCommand}" />
+            <Button Content="Subcontractors" Margin="0,5" Command="{Binding ShowSubcontractorViewCommand}" />
+            <Button Content="Sites" Margin="0,5" Command="{Binding ShowSiteViewCommand}" />
+            <Button Content="Technicians" Margin="0,5" Command="{Binding ShowTechnicianViewCommand}" />
+            <Button Content="Materials" Margin="0,5" Command="{Binding ShowMaterialViewCommand}" />
+            <Button Content="Jobs" Margin="0,5" Command="{Binding ShowJobViewCommand}" />
+            <Button Content="Job Tasks" Margin="0,5" Command="{Binding ShowJobTaskViewCommand}" />
+            <Button Content="Users" Margin="0,5" Command="{Binding ShowUserViewCommand}" />
+            <Button Content="Transactions" Margin="0,5" Command="{Binding ShowFinancialTransactionViewCommand}" />
+            <Button Content="Activity Log" Margin="0,5" Command="{Binding ShowActivityLogViewCommand}" />
+            <Button Content="Allocation" Margin="0,5" Command="{Binding ShowAllocationViewCommand}" />
+            <Button Content="Material Resource" Margin="0,5" Command="{Binding ShowMaterialResourceViewCommand}" />
+            <Button Content="Resource Calendar" Margin="0,5" Command="{Binding ShowResourceCalendarViewCommand}" />
+            <Button Content="Gantt View" Command="{Binding ShowGanttViewCommand}" Style="{StaticResource NavButtonStyle}" />
+        </StackPanel>
+        <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
+    </Grid>
+</Window> 

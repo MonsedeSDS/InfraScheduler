@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="InfraScheduler.Views.ActivityLogView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d">
+
+   
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Timestamp:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+            <DatePicker Grid.Row="0" Grid.Column="1" SelectedDate="{Binding Timestamp, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Label Content="Action:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Width="300" Text="{Binding Action, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Label Content="Entity Affected:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Width="300" Text="{Binding EntityAffected, UpdateSourceTrigger=PropertyChanged}" />
+
+            <Label Content="User ID:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="3" Grid.Column="1" Width="300" Text="{Binding UserId, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Bottom" Margin="10" Grid.ColumnSpan="2">
+            <Button Width="100" Content="Add" Margin="0,0,10,0" Command="{Binding AddLogCommand}" />
+            <Button Width="100" Content="Update" Margin="0,0,10,0" Command="{Binding UpdateLogCommand}" />
+            <Button Width="100" Content="Delete" Command="{Binding DeleteLogCommand}" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" Margin="10"
+                  ItemsSource="{Binding ActivityLogs}"
+                  SelectedItem="{Binding SelectedLog, Mode=TwoWay}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp}" />
+                <DataGridTextColumn Header="Action" Binding="{Binding Action}" />
+                <DataGridTextColumn Header="Entity Affected" Binding="{Binding EntityAffected}" />
+                <DataGridTextColumn Header="User ID" Binding="{Binding UserId}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="InfraScheduler.Views.MaterialResourceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:InfraScheduler.ViewModels"
+             Height="600" Width="900">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Material:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" Width="300"
+                      ItemsSource="{Binding Materials}"
+                      SelectedValue="{Binding MaterialId}"
+                      SelectedValuePath="Id"
+                      DisplayMemberPath="Name" />
+
+            <Label Content="Job Task:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" Width="300"
+                      ItemsSource="{Binding JobTasks}"
+                      SelectedValue="{Binding JobTaskId}"
+                      SelectedValuePath="Id"
+                      DisplayMemberPath="Name" />
+
+            <Label Content="Quantity:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center"/>
+            <TextBox Grid.Row="2" Grid.Column="1" Width="300" Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Bottom" Margin="10" Grid.ColumnSpan="2">
+            <Button Width="100" Content="Add" Margin="0,0,10,0" Command="{Binding AddMaterialRequirementCommand}" />
+            <Button Width="100" Content="Delete" Command="{Binding DeleteMaterialRequirementCommand}" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" Margin="10"
+                  ItemsSource="{Binding MaterialRequirements}"
+                  SelectedItem="{Binding SelectedMaterialRequirement, Mode=TwoWay}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Material" Binding="{Binding Material.Name}" />
+                <DataGridTextColumn Header="Job Task" Binding="{Binding JobTask.Name}" />
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Quantity}" />
+                <DataGridTextColumn Header="Unit" Binding="{Binding Unit}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

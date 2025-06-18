@@ -1,0 +1,12 @@
+﻿<UserControl x:Class="InfraScheduler.Views.MaterialAutoReservationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:InfraScheduler.ViewModels"
+             Height="500" Width="700">
+
+    <StackPanel Margin="20">
+        <ComboBox ItemsSource="{Binding JobTasks}" SelectedItem="{Binding SelectedJobTask}" DisplayMemberPath="Name" Width="400" />
+        <Button Content="Run Material Reservation" Command="{Binding RunMaterialReservationCommand}" Width="250" Margin="0,10,0,10"/>
+        <ListBox ItemsSource="{Binding ReservationReport}" />
+    </StackPanel>
+</UserControl>

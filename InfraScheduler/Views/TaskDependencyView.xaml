@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="InfraScheduler.Views.TaskDependencyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:InfraScheduler.ViewModels"
+             Height="600" Width="900">
+
+
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Parent Task:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" Width="300"
+                      ItemsSource="{Binding JobTasks}" 
+                      DisplayMemberPath="TaskName"
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding ParentTaskId}" />
+
+            <Label Content="Dependent Task:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" Width="300"
+                      ItemsSource="{Binding JobTasks}" 
+                      DisplayMemberPath="TaskName"
+                      SelectedValuePath="Id"
+                      SelectedValue="{Binding DependentTaskId}" />
+        </Grid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Bottom" Margin="10" Grid.ColumnSpan="2">
+            <Button Width="100" Content="Add" Margin="0,0,10,0" Command="{Binding AddDependencyCommand}" />
+            <Button Width="100" Content="Delete" Command="{Binding DeleteDependencyCommand}" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" Margin="10"
+                  ItemsSource="{Binding TaskDependencies}"
+                  SelectedItem="{Binding SelectedDependency, Mode=TwoWay}"
+                  AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Parent Task" Binding="{Binding ParentTask.TaskName}" />
+                <DataGridTextColumn Header="Dependent Task" Binding="{Binding DependentTask.TaskName}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
