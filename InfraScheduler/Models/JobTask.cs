@@ -9,7 +9,6 @@ namespace InfraScheduler.Models
     {
         public JobTask()
         {
-            MaterialRequirements = new List<MaterialRequirement>();
             Dependencies = new List<TaskDependency>();
             Name = string.Empty;
             Description = string.Empty;
@@ -50,13 +49,9 @@ namespace InfraScheduler.Models
         public int? TechnicianId { get; set; }
         public virtual Technician? Technician { get; set; }
 
-        public virtual ICollection<MaterialRequirement> MaterialRequirements { get; set; }
         public virtual ICollection<TaskDependency> Dependencies { get; set; }
 
         public DateTime? CompletedAt { get; set; }
-
-        public DateTime? PlannedStart { get; set; }
-        public DateTime? PlannedEnd { get; set; }
 
         // Alias for Name to maintain compatibility
         [NotMapped]

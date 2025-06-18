@@ -42,12 +42,11 @@
                     </StackPanel>
                 </Expander>
 
-                <!-- Material Resources -->
-                <Expander Header="Material Resources" IsExpanded="True">
-                    <StackPanel Margin="10,0,0,0">
-                        <Button Content="Materials" Command="{Binding ShowMaterialViewCommand}" Margin="0,2"/>
-                        <Button Content="Material Resources" Command="{Binding ShowMaterialResourceViewCommand}" Margin="0,2"/>
-                        <Button Content="Material Reservations" Command="{Binding ShowMaterialReservationViewCommand}" Margin="0,2"/>
+                <!-- Resources -->
+                <Expander Header="Resources" IsExpanded="True">
+                    <StackPanel>
+                        <Button Content="Technicians" Command="{Binding ShowTechnicianViewCommand}" Margin="0,2"/>
+                        <Button Content="Technician Assignments" Command="{Binding ShowTechnicianAssignmentViewCommand}" Margin="0,2"/>
                     </StackPanel>
                 </Expander>
 
@@ -57,14 +56,6 @@
                         <Button Content="Jobs" Command="{Binding ShowJobViewCommand}" Margin="0,2"/>
                         <Button Content="Job Tasks" Command="{Binding ShowJobTaskViewCommand}" Margin="0,2"/>
                         <Button Content="Task Dependencies" Command="{Binding ShowTaskDependencyViewCommand}" Margin="0,2"/>
-                    </StackPanel>
-                </Expander>
-
-                <!-- Resource Scheduling &amp; Forecast -->
-                <Expander Header="Resource Scheduling &amp; Forecast" IsExpanded="True">
-                    <StackPanel Margin="10,0,0,0">
-                        <Button Content="Resource Calendar" Command="{Binding ShowResourceCalendarViewCommand}" Margin="0,2"/>
-                        <Button Content="Allocations" Command="{Binding ShowAllocationViewCommand}" Margin="0,2"/>
                     </StackPanel>
                 </Expander>
 
@@ -86,17 +77,6 @@
                 <Expander Header="User Admin" IsExpanded="True">
                     <StackPanel Margin="10,0,0,0">
                         <Button Content="Users" Command="{Binding ShowUserViewCommand}" Margin="0,2"/>
-                    </StackPanel>
-                </Expander>
-
-                <!-- Scheduling -->
-                <Expander Header="Scheduling" IsExpanded="True">
-                    <StackPanel Margin="10,0,0,0">
-                        <Button Content="Schedule" Command="{Binding ShowScheduleViewCommand}" Margin="0,2"/>
-                        <Button Content="Auto Scheduler" Command="{Binding ShowAutoSchedulerViewCommand}" Margin="0,2"/>
-                        <Button Content="Material Auto Reservation" Command="{Binding ShowMaterialAutoReservationViewCommand}" Margin="0,2"/>
-                        <Button Content="Integrated Scheduler" Command="{Binding ShowIntegratedSchedulerViewCommand}" Margin="0,2"/>
-                        <Button Content="Gantt View" Command="{Binding ShowGanttViewCommand}" Margin="0,2"/>
                     </StackPanel>
                 </Expander>
 

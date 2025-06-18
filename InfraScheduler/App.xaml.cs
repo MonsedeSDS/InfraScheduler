@@ -64,22 +64,16 @@ namespace InfraScheduler
             services.AddTransient<SiteOwnerViewModel>();
             services.AddTransient<TechnicianViewModel>();
             services.AddTransient<TechnicianAssignmentViewModel>();
-            services.AddTransient<MaterialViewModel>();
-            services.AddTransient<MaterialResourceViewModel>();
-            services.AddTransient<MaterialReservationViewModel>();
+            services.AddTransient<ToolViewModel>();
+            services.AddTransient<ToolCategoryViewModel>();
+            services.AddTransient<ToolAssignmentViewModel>();
+            services.AddTransient<ToolMaintenanceViewModel>();
             services.AddTransient<JobViewModel>();
             services.AddTransient<JobTaskViewModel>();
             services.AddTransient<TaskDependencyViewModel>();
-            services.AddTransient<ResourceCalendarViewModel>();
-            services.AddTransient<AllocationViewModel>();
             services.AddTransient<FinancialTransactionViewModel>();
             services.AddTransient<ActivityLogViewModel>();
             services.AddTransient<UserViewModel>();
-            services.AddTransient<ScheduleViewModel>();
-            services.AddTransient<AutoSchedulerViewModel>();
-            services.AddTransient<MaterialAutoReservationViewModel>();
-            services.AddTransient<IntegratedSchedulerViewModel>();
-            services.AddTransient<GanttViewModel>();
 
             // Register Views
             services.AddTransient<ClientView>();
@@ -89,22 +83,16 @@ namespace InfraScheduler
             services.AddTransient<SiteOwnerView>();
             services.AddTransient<TechnicianView>();
             services.AddTransient<TechnicianAssignmentView>();
-            services.AddTransient<MaterialView>();
-            services.AddTransient<MaterialResourceView>();
-            services.AddTransient<MaterialReservationView>();
+            services.AddTransient<ToolView>();
+            services.AddTransient<ToolCategoryView>();
+            services.AddTransient<ToolAssignmentView>();
+            services.AddTransient<ToolMaintenanceView>();
             services.AddTransient<JobView>();
             services.AddTransient<JobTaskView>();
             services.AddTransient<TaskDependencyView>();
-            services.AddTransient<ResourceCalendarView>();
-            services.AddTransient<AllocationView>();
             services.AddTransient<FinancialTransactionView>();
             services.AddTransient<ActivityLogView>();
             services.AddTransient<UserView>();
-            services.AddTransient<ScheduleView>();
-            services.AddTransient<AutoSchedulerView>();
-            services.AddTransient<MaterialAutoReservationView>();
-            services.AddTransient<IntegratedSchedulerView>();
-            services.AddTransient<GanttView>();
         }
     }
 }

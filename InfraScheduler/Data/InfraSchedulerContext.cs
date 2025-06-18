@@ -16,25 +16,19 @@ namespace InfraScheduler.Data
         public DbSet<User> Users { get; set; }
         public DbSet<JobTask> JobTasks { get; set; }
         public DbSet<Technician> Technicians { get; set; }
-        public DbSet<Material> Materials { get; set; }
-        public DbSet<MaterialRequirement> MaterialRequirements { get; set; }
+        public DbSet<Tool> Tools { get; set; }
+        public DbSet<ToolCategory> ToolCategories { get; set; }
+        public DbSet<ToolAssignment> ToolAssignments { get; set; }
+        public DbSet<ToolMaintenance> ToolMaintenances { get; set; }
         public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
-        public DbSet<ResourceCategory> ResourceCategories { get; set; }
-        public DbSet<Resource> Resources { get; set; }
-        public DbSet<ResourceCalendar> ResourceCalendars { get; set; }
-        public DbSet<Allocation> Allocations { get; set; }
-        public DbSet<MaterialResource> MaterialResources { get; set; }
         public DbSet<JobTaskTechnician> JobTaskTechnicians { get; set; }
-        public DbSet<JobTaskMaterial> JobTaskMaterials { get; set; }
-        public DbSet<TechnicianAssignment> TechnicianAssignments { get; set; }
-        public DbSet<MaterialReservation> MaterialReservations { get; set; }
         public DbSet<TaskDependency> TaskDependencies { get; set; }
-        public DbSet<ScheduleSlot> ScheduleSlots { get; set; }
-        public DbSet<MaterialInventory> MaterialInventory { get; set; }
-        public DbSet<MaterialDelivery> MaterialDeliveries { get; set; }
         public DbSet<Certification> Certifications { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<MaterialRequirement> MaterialRequirements => Set<MaterialRequirement>();
+        public DbSet<TechnicianAssignment> TechnicianAssignments => Set<TechnicianAssignment>();
+        public DbSet<ToolMaintenance> ToolMaintenance => Set<ToolMaintenance>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -76,17 +70,50 @@ namespace InfraScheduler.Data
                 }
             );
 
-            // Inheritance map
-            modelBuilder.Entity<Resource>()
-                        .HasDiscriminator<string>("ResourceType");
+            // Configure Tool relationships
+            modelBuilder.Entity<Tool>()
+                .HasOne(t => t.Category)
+                .WithMany(c => c.Tools)
+                .HasForeignKey(t => t.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Seed reference data
-            modelBuilder.Entity<ResourceCategory>().HasData(
-                new ResourceCategory { Id = 1, Name = "Technician" },
-                new ResourceCategory { Id = 2, Name = "Vehicle" },
-                new ResourceCategory { Id = 3, Name = "Tool" },
-                new ResourceCategory { Id = 4, Name = "Budget" }
-            );
+            modelBuilder.Entity<Tool>()
+                .HasOne(t => t.AssignedToJob)
+                .WithMany()
+                .HasForeignKey(t => t.AssignedToJobId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Tool>()
+                .HasOne(t => t.AssignedToTechnician)
+                .WithMany()
+                .HasForeignKey(t => t.AssignedToTechnicianId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure ToolAssignment relationships
+            modelBuilder.Entity<ToolAssignment>()
+                .HasOne(a => a.Tool)
+                .WithMany(t => t.Assignments)
+                .HasForeignKey(a => a.ToolId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ToolAssignment>()
+                .HasOne(a => a.Technician)
+                .WithMany()
+                .HasForeignKey(a => a.TechnicianId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ToolAssignment>()
+                .HasOne(a => a.Job)
+                .WithMany()
+                .HasForeignKey(a => a.JobId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure ToolMaintenance relationships
+            modelBuilder.Entity<ToolMaintenance>()
+                .HasOne(m => m.Tool)
+                .WithMany(t => t.MaintenanceHistory)
+                .HasForeignKey(m => m.ToolId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<TaskDependency>()
                 .HasIndex(t => new { t.ParentTaskId, t.PrerequisiteTaskId })
@@ -99,18 +126,6 @@ namespace InfraScheduler.Data
                 .HasForeignKey(t => t.JobId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<MaterialRequirement>()
-                .HasOne(r => r.JobTask)
-                .WithMany(t => t.MaterialRequirements)
-                .HasForeignKey(r => r.JobTaskId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<MaterialRequirement>()
-                .HasOne(r => r.Material)
-                .WithMany()
-                .HasForeignKey(r => r.MaterialId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<TaskDependency>()
                 .HasOne(td => td.ParentTask)
                 .WithMany()
@@ -121,18 +136,6 @@ namespace InfraScheduler.Data
                 .HasOne(td => td.PrerequisiteTask)
                 .WithMany()
                 .HasForeignKey(td => td.PrerequisiteTaskId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MaterialInventory>()
-                .HasOne(i => i.Material)
-                .WithMany()
-                .HasForeignKey(i => i.MaterialId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MaterialDelivery>()
-                .HasOne(d => d.Material)
-                .WithMany()
-                .HasForeignKey(d => d.MaterialId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Configure Client
@@ -179,6 +182,14 @@ namespace InfraScheduler.Data
             modelBuilder.Entity<Certification>().HasData(
                 new Certification { Id = 1, Name = "CCNA" },
                 new Certification { Id = 2, Name = "CCNP" }
+            );
+
+            // Seed initial tool categories
+            modelBuilder.Entity<ToolCategory>().HasData(
+                new ToolCategory { Id = 1, Name = "Power Tools", Description = "Electric and battery-powered tools" },
+                new ToolCategory { Id = 2, Name = "Hand Tools", Description = "Manual tools and equipment" },
+                new ToolCategory { Id = 3, Name = "Testing Equipment", Description = "Diagnostic and testing tools" },
+                new ToolCategory { Id = 4, Name = "Safety Equipment", Description = "Personal protective equipment" }
             );
         }
     }

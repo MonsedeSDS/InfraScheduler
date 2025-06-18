@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InfraScheduler.Models
 {
@@ -27,7 +28,7 @@ namespace InfraScheduler.Models
 
         public decimal HourlyRate { get; set; }
 
-        public ICollection<Allocation> Allocations { get; set; } = new List<Allocation>();
-        public ICollection<ResourceCalendar> ResourceCalendars { get; set; } = new List<ResourceCalendar>();
+        [NotMapped]
+        public string FullName => $"{FirstName} {LastName}";
     }
 }

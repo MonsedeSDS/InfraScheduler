@@ -25,16 +25,11 @@ namespace InfraScheduler.ViewModels
         private int? _technicianId;
         private JobTask? _selectedTask;
         private Technician? _selectedTechnician;
-        private Material? _selectedMaterial;
-        private double _quantity;
         private TaskDependency? _selectedDependency;
         private JobTask? _selectedDependentTask;
-        private string _forecastResult = string.Empty;
         private bool _isLoading;
         private ObservableCollection<JobTask> _tasks = new();
         private ObservableCollection<Technician> _technicians = new();
-        private ObservableCollection<Material> _materials = new();
-        private ObservableCollection<MaterialRequirement> _materialRequirements = new();
         private ObservableCollection<TaskDependency> _dependencies = new();
         private int? _parentTaskId;
         private int? _prerequisiteTaskId;
@@ -177,32 +172,6 @@ namespace InfraScheduler.ViewModels
             }
         }
 
-        public Material? SelectedMaterial
-        {
-            get => _selectedMaterial;
-            set
-            {
-                if (_selectedMaterial != value)
-                {
-                    _selectedMaterial = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public double Quantity
-        {
-            get => _quantity;
-            set
-            {
-                if (_quantity != value)
-                {
-                    _quantity = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public TaskDependency? SelectedDependency
         {
             get => _selectedDependency;
@@ -233,19 +202,6 @@ namespace InfraScheduler.ViewModels
             }
         }
 
-        public string ForecastResult
-        {
-            get => _forecastResult;
-            set
-            {
-                if (_forecastResult != value)
-                {
-                    _forecastResult = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public bool IsLoading
         {
             get => _isLoading;
@@ -264,8 +220,11 @@ namespace InfraScheduler.ViewModels
             get => _tasks;
             set
             {
-                _tasks = value;
-                OnPropertyChanged();
+                if (_tasks != value)
+                {
+                    _tasks = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -274,28 +233,11 @@ namespace InfraScheduler.ViewModels
             get => _technicians;
             set
             {
-                _technicians = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ObservableCollection<Material> Materials
-        {
-            get => _materials;
-            set
-            {
-                _materials = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public ObservableCollection<MaterialRequirement> MaterialRequirements
-        {
-            get => _materialRequirements;
-            set
-            {
-                _materialRequirements = value;
-                OnPropertyChanged();
+                if (_technicians != value)
+                {
+                    _technicians = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -304,8 +246,11 @@ namespace InfraScheduler.ViewModels
             get => _dependencies;
             set
             {
-                _dependencies = value;
-                OnPropertyChanged();
+                if (_dependencies != value)
+                {
+                    _dependencies = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -339,66 +284,47 @@ namespace InfraScheduler.ViewModels
         public ICommand AddTaskCommand { get; }
         public ICommand UpdateTaskCommand { get; }
         public ICommand DeleteTaskCommand { get; }
-        public ICommand AddMaterialRequirementCommand { get; }
-        public ICommand UpdateMaterialRequirementCommand { get; }
-        public ICommand DeleteMaterialRequirementCommand { get; }
         public ICommand AddDependencyCommand { get; }
         public ICommand UpdateDependencyCommand { get; }
         public ICommand DeleteDependencyCommand { get; }
-        public ICommand ForecastCommand { get; }
         public ICommand ClearCommand { get; }
 
         public JobTaskViewModel(InfraSchedulerContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            
-            LoadDataCommand = new AsyncRelayCommand(LoadDataAsync);
-            AddTaskCommand = new AsyncRelayCommand(AddTaskAsync);
-            UpdateTaskCommand = new AsyncRelayCommand(UpdateTaskAsync);
-            DeleteTaskCommand = new AsyncRelayCommand(DeleteTaskAsync);
-            AddMaterialRequirementCommand = new AsyncRelayCommand(AddMaterialRequirementAsync);
-            UpdateMaterialRequirementCommand = new AsyncRelayCommand(UpdateMaterialRequirementAsync);
-            DeleteMaterialRequirementCommand = new AsyncRelayCommand(DeleteMaterialRequirementAsync);
-            AddDependencyCommand = new AsyncRelayCommand(AddDependencyAsync);
-            UpdateDependencyCommand = new AsyncRelayCommand(UpdateDependencyAsync);
-            DeleteDependencyCommand = new AsyncRelayCommand(DeleteDependencyAsync);
-            ForecastCommand = new AsyncRelayCommand(ForecastAsync);
-            ClearCommand = new AsyncRelayCommand(ClearFieldsAsync);
+            _context = context;
+            LoadDataCommand = new RelayCommand(async () => await LoadDataAsync());
+            AddTaskCommand = new RelayCommand(async () => await AddTaskAsync());
+            UpdateTaskCommand = new RelayCommand(async () => await UpdateTaskAsync());
+            DeleteTaskCommand = new RelayCommand(async () => await DeleteTaskAsync());
+            AddDependencyCommand = new RelayCommand(async () => await AddDependencyAsync());
+            UpdateDependencyCommand = new RelayCommand(async () => await UpdateDependencyAsync());
+            DeleteDependencyCommand = new RelayCommand(async () => await DeleteDependencyAsync());
+            ClearCommand = new RelayCommand(async () => await ClearFieldsAsync());
         }
 
         private async Task LoadDataAsync()
         {
-            if (_jobId <= 0) return;
-
-            var tasks = await _context.JobTasks
-                .Include(t => t.Technician)
-                .Include(t => t.MaterialRequirements)
-                    .ThenInclude(mr => mr.Material)
-                .Include(t => t.Dependencies)
-                    .ThenInclude(d => d.ParentTask)
-                .Include(t => t.Dependencies)
-                    .ThenInclude(d => d.PrerequisiteTask)
-                .Where(t => t.JobId == _jobId)
-                .ToListAsync();
-
-            Tasks.Clear();
-            foreach (var task in tasks)
+            IsLoading = true;
+            try
             {
-                Tasks.Add(task);
+                var tasks = await _context.JobTasks
+                    .Where(t => t.JobId == JobId)
+                    .Include(t => t.Technician)
+                    .Include(t => t.Dependencies)
+                    .ToListAsync();
+
+                var technicians = await _context.Technicians.ToListAsync();
+
+                Tasks = new ObservableCollection<JobTask>(tasks);
+                Technicians = new ObservableCollection<Technician>(technicians);
             }
-
-            var technicians = await _context.Technicians.ToListAsync();
-            Technicians.Clear();
-            foreach (var technician in technicians)
+            catch (Exception ex)
             {
-                Technicians.Add(technician);
+                MessageBox.Show($"Error loading data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            var materials = await _context.Materials.ToListAsync();
-            Materials.Clear();
-            foreach (var material in materials)
+            finally
             {
-                Materials.Add(material);
+                IsLoading = false;
             }
         }
 
@@ -423,7 +349,7 @@ namespace InfraScheduler.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Name))
             {
-                MessageBox.Show("Please enter a task name.");
+                MessageBox.Show("Please enter a task name.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -435,26 +361,27 @@ namespace InfraScheduler.ViewModels
                 EndDate = EndDate,
                 Progress = Progress,
                 Status = Status,
-                JobId = _jobId,
+                JobId = JobId,
                 TechnicianId = TechnicianId
             };
 
             _context.JobTasks.Add(task);
             await _context.SaveChangesAsync();
             await LoadDataAsync();
+            await ClearFieldsAsync();
         }
 
         private async Task UpdateTaskAsync()
         {
             if (SelectedTask == null)
             {
-                MessageBox.Show("Please select a task to update.");
+                MessageBox.Show("Please select a task to update.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(Name))
             {
-                MessageBox.Show("Please enter a task name.");
+                MessageBox.Show("Please enter a task name.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -468,22 +395,24 @@ namespace InfraScheduler.ViewModels
 
             await _context.SaveChangesAsync();
             await LoadDataAsync();
+            await ClearFieldsAsync();
         }
 
         private async Task DeleteTaskAsync()
         {
             if (SelectedTask == null)
             {
-                MessageBox.Show("Please select a task to delete.");
+                MessageBox.Show("Please select a task to delete.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var result = MessageBox.Show("Are you sure you want to delete this task?", "Confirm Delete", MessageBoxButton.YesNo);
+            var result = MessageBox.Show("Are you sure you want to delete this task?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 _context.JobTasks.Remove(SelectedTask);
                 await _context.SaveChangesAsync();
                 await LoadDataAsync();
+                await ClearFieldsAsync();
             }
         }
 
@@ -491,195 +420,64 @@ namespace InfraScheduler.ViewModels
         {
             if (SelectedTask == null)
             {
-                MessageBox.Show("Please select a task first.");
+                MessageBox.Show("Please select a task to add a dependency to.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (ParentTaskId == null || PrerequisiteTaskId == null)
+            if (SelectedDependentTask == null)
             {
-                MessageBox.Show("Please select both parent and prerequisite tasks.");
+                MessageBox.Show("Please select a dependent task.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             var dependency = new TaskDependency
             {
-                ParentTaskId = ParentTaskId.Value,
-                PrerequisiteTaskId = PrerequisiteTaskId.Value
+                ParentTaskId = SelectedTask.Id,
+                PrerequisiteTaskId = SelectedDependentTask.Id
             };
 
             _context.TaskDependencies.Add(dependency);
             await _context.SaveChangesAsync();
             await LoadDataAsync();
+            await ClearFieldsAsync();
         }
 
         private async Task UpdateDependencyAsync()
         {
             if (SelectedDependency == null)
             {
-                MessageBox.Show("Please select a dependency to update.");
+                MessageBox.Show("Please select a dependency to update.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (ParentTaskId == null || PrerequisiteTaskId == null)
+            if (SelectedDependentTask == null)
             {
-                MessageBox.Show("Please select both parent and prerequisite tasks.");
+                MessageBox.Show("Please select a dependent task.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            SelectedDependency.ParentTaskId = ParentTaskId.Value;
-            SelectedDependency.PrerequisiteTaskId = PrerequisiteTaskId.Value;
+            SelectedDependency.PrerequisiteTaskId = SelectedDependentTask.Id;
 
             await _context.SaveChangesAsync();
             await LoadDataAsync();
+            await ClearFieldsAsync();
         }
 
         private async Task DeleteDependencyAsync()
         {
             if (SelectedDependency == null)
             {
-                MessageBox.Show("Please select a dependency to delete.");
+                MessageBox.Show("Please select a dependency to delete.", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            var result = MessageBox.Show("Are you sure you want to delete this dependency?", "Confirm Delete", MessageBoxButton.YesNo);
+            var result = MessageBox.Show("Are you sure you want to delete this dependency?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
                 _context.TaskDependencies.Remove(SelectedDependency);
                 await _context.SaveChangesAsync();
                 await LoadDataAsync();
-            }
-        }
-
-        private async Task AddMaterialRequirementAsync()
-        {
-            if (SelectedTask == null)
-            {
-                MessageBox.Show("Please select a task first.");
-                return;
-            }
-
-            if (SelectedMaterial == null)
-            {
-                MessageBox.Show("Please select a material.");
-                return;
-            }
-
-            if (Quantity <= 0)
-            {
-                MessageBox.Show("Please enter a valid quantity.");
-                return;
-            }
-
-            var requirement = new MaterialRequirement
-            {
-                JobTaskId = SelectedTask.Id,
-                MaterialId = SelectedMaterial.Id,
-                Quantity = Quantity,
-                Unit = "pcs" // Default unit
-            };
-
-            _context.MaterialRequirements.Add(requirement);
-            await _context.SaveChangesAsync();
-            await LoadDataAsync();
-        }
-
-        private async Task UpdateMaterialRequirementAsync()
-        {
-            if (SelectedTask == null)
-            {
-                MessageBox.Show("Please select a task first.");
-                return;
-            }
-
-            if (SelectedMaterial == null)
-            {
-                MessageBox.Show("Please select a material.");
-                return;
-            }
-
-            if (Quantity <= 0)
-            {
-                MessageBox.Show("Please enter a valid quantity.");
-                return;
-            }
-
-            var requirement = await _context.MaterialRequirements
-                .FirstOrDefaultAsync(r => r.JobTaskId == SelectedTask.Id && r.MaterialId == SelectedMaterial.Id);
-
-            if (requirement != null)
-            {
-                requirement.Quantity = Quantity;
-                await _context.SaveChangesAsync();
-                await LoadDataAsync();
-            }
-        }
-
-        private async Task DeleteMaterialRequirementAsync()
-        {
-            if (SelectedTask == null)
-            {
-                MessageBox.Show("Please select a task first.");
-                return;
-            }
-
-            if (SelectedMaterial == null)
-            {
-                MessageBox.Show("Please select a material.");
-                return;
-            }
-
-            var requirement = await _context.MaterialRequirements
-                .FirstOrDefaultAsync(r => r.JobTaskId == SelectedTask.Id && r.MaterialId == SelectedMaterial.Id);
-
-            if (requirement != null)
-            {
-                _context.MaterialRequirements.Remove(requirement);
-                await _context.SaveChangesAsync();
-                await LoadDataAsync();
-            }
-        }
-
-        private async Task ForecastAsync()
-        {
-            if (SelectedTask == null)
-            {
-                MessageBox.Show("Please select a task first.");
-                return;
-            }
-
-            var dependencies = await _context.TaskDependencies
-                .Where(d => d.ParentTaskId == SelectedTask.Id || d.PrerequisiteTaskId == SelectedTask.Id)
-                .ToListAsync();
-
-            if (dependencies.Any())
-            {
-                ForecastResult = $"Task has {dependencies.Count} dependencies.";
-            }
-            else
-            {
-                ForecastResult = "Task has no dependencies.";
-            }
-        }
-
-        private async Task ForecastMaterialAsync()
-        {
-            if (SelectedTask == null)
-            {
-                MessageBox.Show("Please select a task first.");
-                return;
-            }
-
-            var requirements = await _context.MaterialRequirements
-                .Where(r => r.JobTaskId == SelectedTask.Id)
-                .ToListAsync();
-
-            if (requirements.Any())
-            {
-                ForecastResult = $"Task requires {requirements.Count} different materials.";
-            }
-            else
-            {
-                ForecastResult = "No material requirements found.";
+                await ClearFieldsAsync();
             }
         }
 
@@ -694,22 +492,16 @@ namespace InfraScheduler.ViewModels
             TechnicianId = null;
             SelectedTask = null;
             SelectedTechnician = null;
-            SelectedMaterial = null;
-            Quantity = 0;
             SelectedDependency = null;
             SelectedDependentTask = null;
-            ForecastResult = string.Empty;
-            await Task.CompletedTask;
+            ParentTaskId = null;
+            PrerequisiteTaskId = null;
         }
 
         public void SetJobId(int jobId)
         {
-            if (_jobId != jobId)
-            {
-                _jobId = jobId;
-                OnPropertyChanged(nameof(JobId));
-                _ = LoadDataAsync();
-            }
+            JobId = jobId;
+            LoadDataCommand.Execute(null);
         }
 
         [RelayCommand]
@@ -734,64 +526,6 @@ namespace InfraScheduler.ViewModels
         private async Task RemoveDependencyAsync()
         {
             await DeleteDependencyAsync();
-        }
-
-        [RelayCommand]
-        private async Task ForecastTaskAsync()
-        {
-            await ForecastAsync();
-        }
-
-        [RelayCommand]
-        private async Task CheckConflictsAsync()
-        {
-            if (SelectedTask == null)
-            {
-                MessageBox.Show("Please select a task first.");
-                return;
-            }
-
-            var conflicts = await _context.TaskDependencies
-                .Where(d => d.ParentTaskId == SelectedTask.Id || d.PrerequisiteTaskId == SelectedTask.Id)
-                .ToListAsync();
-
-            if (conflicts.Any())
-            {
-                ForecastResult = $"Found {conflicts.Count} potential conflicts.";
-            }
-            else
-            {
-                ForecastResult = "No conflicts found.";
-            }
-        }
-
-        [RelayCommand]
-        private async Task RunConflictAnalysisAsync()
-        {
-            await CheckConflictsAsync();
-        }
-
-        [RelayCommand]
-        private async Task SuggestScheduleAsync()
-        {
-            if (SelectedTask == null)
-            {
-                MessageBox.Show("Please select a task first.");
-                return;
-            }
-
-            var dependencies = await _context.TaskDependencies
-                .Where(d => d.ParentTaskId == SelectedTask.Id || d.PrerequisiteTaskId == SelectedTask.Id)
-                .ToListAsync();
-
-            if (dependencies.Any())
-            {
-                ForecastResult = $"Task has {dependencies.Count} dependencies that need to be scheduled first.";
-            }
-            else
-            {
-                ForecastResult = "Task can be scheduled independently.";
-            }
         }
     }
 }

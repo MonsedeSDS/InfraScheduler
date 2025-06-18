@@ -3,6 +3,7 @@ using System;
 using InfraScheduler.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InfraScheduler.Migrations
 {
     [DbContext(typeof(InfraSchedulerContext))]
-    partial class InfraSchedulerContextModelSnapshot : ModelSnapshot
+    [Migration("20250618131547_RemoveSchedulingTables")]
+    partial class RemoveSchedulingTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
@@ -610,6 +613,11 @@ namespace InfraScheduler.Migrations
                     b.Property<string>("Notes")
                         .IsRequired()
                         .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SerialNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Status")

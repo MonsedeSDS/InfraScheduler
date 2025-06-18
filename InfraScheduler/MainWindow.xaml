@@ -25,15 +25,12 @@
             <Button Content="Sites" Margin="0,5" Command="{Binding ShowSiteViewCommand}" />
             <Button Content="Technicians" Margin="0,5" Command="{Binding ShowTechnicianViewCommand}" />
             <Button Content="Materials" Margin="0,5" Command="{Binding ShowMaterialViewCommand}" />
+            <Button Content="Tools" Margin="0,5" Command="{Binding ShowToolViewCommand}" />
             <Button Content="Jobs" Margin="0,5" Command="{Binding ShowJobViewCommand}" />
             <Button Content="Job Tasks" Margin="0,5" Command="{Binding ShowJobTaskViewCommand}" />
             <Button Content="Users" Margin="0,5" Command="{Binding ShowUserViewCommand}" />
             <Button Content="Transactions" Margin="0,5" Command="{Binding ShowFinancialTransactionViewCommand}" />
             <Button Content="Activity Log" Margin="0,5" Command="{Binding ShowActivityLogViewCommand}" />
-            <Button Content="Allocation" Margin="0,5" Command="{Binding ShowAllocationViewCommand}" />
-            <Button Content="Material Resource" Margin="0,5" Command="{Binding ShowMaterialResourceViewCommand}" />
-            <Button Content="Resource Calendar" Margin="0,5" Command="{Binding ShowResourceCalendarViewCommand}" />
-            <Button Content="Gantt View" Command="{Binding ShowGanttViewCommand}" Style="{StaticResource NavButtonStyle}" />
         </StackPanel>
         <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
     </Grid>

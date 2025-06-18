@@ -14,8 +14,6 @@
             <!-- Buttons -->
             <RowDefinition Height="*"/>
             <!-- DataGrid -->
-            <RowDefinition Height="Auto"/>
-            <!-- Forecast -->
         </Grid.RowDefinitions>
 
         <!-- FORM FIELDS -->
@@ -104,14 +102,6 @@
                 <Button Width="100" Content="Update" Margin="0,0,10,0" Command="{Binding UpdateJobTaskCommand}" />
                 <Button Width="100" Content="Delete" Margin="0,0,10,0" Command="{Binding DeleteJobTaskCommand}" />
             </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                <Button Width="150" Content="Forecast Resources" Margin="0,0,10,0" Command="{Binding ForecastTaskCommand}" />
-                <Button Width="150" Content="Check Conflicts" Margin="0,0,10,0" Command="{Binding CheckConflictsCommand}" />
-                <Button Width="150" Content="Forecast Material Stock" Margin="0,0,10,0" Command="{Binding ForecastTaskCommand}" />
-                <Button Width="150" Content="Conflict Check" Margin="0,0,10,0" Command="{Binding RunConflictAnalysisCommand}" />
-                <Button Width="150" Content="Suggest Schedule" Command="{Binding SuggestScheduleCommand}" />
-            </StackPanel>
         </StackPanel>
 
         <!-- DATAGRID -->
@@ -128,10 +118,5 @@
                 <DataGridTextColumn Header="Technician" Binding="{Binding Technician.Name}" />
             </DataGrid.Columns>
         </DataGrid>
-
-        <!-- FORECAST RESULT -->
-        <TextBlock Grid.Row="4" Margin="10" VerticalAlignment="Bottom"
-                   Text="{Binding ForecastResult}" 
-                   FontWeight="Bold" Foreground="DarkRed"/>
     </Grid>
 </UserControl>

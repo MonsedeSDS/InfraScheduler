@@ -15,7 +15,6 @@ namespace InfraScheduler.ViewModels
     public partial class NavigationViewModel : ObservableObject
     {
         private readonly InfraSchedulerContext _context;
-        private readonly SchedulerService _scheduler;
         private ObservableCollection<Job> _jobs = new();
         private Job? _selectedJob;
         private JobTask? _selectedTask;
@@ -90,27 +89,17 @@ namespace InfraScheduler.ViewModels
         public ICommand ShowSiteOwnerViewCommand { get; }
         public ICommand ShowTechnicianViewCommand { get; }
         public ICommand ShowTechnicianAssignmentViewCommand { get; }
-        public ICommand ShowMaterialViewCommand { get; }
-        public ICommand ShowMaterialResourceViewCommand { get; }
-        public ICommand ShowMaterialReservationViewCommand { get; }
         public ICommand ShowJobViewCommand { get; }
         public ICommand ShowJobTaskViewCommand { get; }
         public ICommand ShowTaskDependencyViewCommand { get; }
-        public ICommand ShowResourceCalendarViewCommand { get; }
-        public ICommand ShowAllocationViewCommand { get; }
         public ICommand ShowFinancialTransactionViewCommand { get; }
         public ICommand ShowActivityLogViewCommand { get; }
         public ICommand ShowUserViewCommand { get; }
-        public ICommand ShowScheduleViewCommand { get; }
-        public ICommand ShowAutoSchedulerViewCommand { get; }
-        public ICommand ShowMaterialAutoReservationViewCommand { get; }
-        public ICommand ShowIntegratedSchedulerViewCommand { get; }
-        public ICommand ShowGanttViewCommand { get; }
+        public ICommand ShowToolViewCommand { get; }
 
         public NavigationViewModel(InfraSchedulerContext context, IServiceProvider serviceProvider)
         {
             _context = context;
-            _scheduler = new SchedulerService(context);
             _jobViewModel = new JobViewModel(context);
             _jobTaskViewModel = new JobTaskViewModel(context);
             _serviceProvider = serviceProvider;
@@ -126,22 +115,13 @@ namespace InfraScheduler.ViewModels
             ShowSiteOwnerViewCommand = CreateNavigationCommand<SiteOwnerView>();
             ShowTechnicianViewCommand = CreateNavigationCommand<TechnicianView>();
             ShowTechnicianAssignmentViewCommand = CreateNavigationCommand<TechnicianAssignmentView>();
-            ShowMaterialViewCommand = CreateNavigationCommand<MaterialView>();
-            ShowMaterialResourceViewCommand = CreateNavigationCommand<MaterialResourceView>();
-            ShowMaterialReservationViewCommand = CreateNavigationCommand<MaterialReservationView>();
             ShowJobViewCommand = CreateNavigationCommand<JobView>();
             ShowJobTaskViewCommand = CreateNavigationCommand<JobTaskView>();
             ShowTaskDependencyViewCommand = CreateNavigationCommand<TaskDependencyView>();
-            ShowResourceCalendarViewCommand = CreateNavigationCommand<ResourceCalendarView>();
-            ShowAllocationViewCommand = CreateNavigationCommand<AllocationView>();
             ShowFinancialTransactionViewCommand = CreateNavigationCommand<FinancialTransactionView>();
             ShowActivityLogViewCommand = CreateNavigationCommand<ActivityLogView>();
             ShowUserViewCommand = CreateNavigationCommand<UserView>();
-            ShowScheduleViewCommand = CreateNavigationCommand<ScheduleView>();
-            ShowAutoSchedulerViewCommand = CreateNavigationCommand<AutoSchedulerView>();
-            ShowMaterialAutoReservationViewCommand = CreateNavigationCommand<MaterialAutoReservationView>();
-            ShowIntegratedSchedulerViewCommand = CreateNavigationCommand<IntegratedSchedulerView>();
-            ShowGanttViewCommand = CreateNavigationCommand<GanttView>();
+            ShowToolViewCommand = CreateNavigationCommand<ToolView>();
         }
 
         public NavigationViewModel() : this(App.Db, App.ServiceProvider) { }
@@ -175,9 +155,6 @@ namespace InfraScheduler.ViewModels
                 IsLoading = true;
                 var jobs = await _context.Jobs
                     .Include(j => j.Tasks)
-                    .ThenInclude(t => t.Technician)
-                    .Include(j => j.Tasks)
-                    .ThenInclude(t => t.MaterialRequirements)
                     .ToListAsync();
 
                 Jobs = new ObservableCollection<Job>(jobs);
@@ -199,7 +176,7 @@ namespace InfraScheduler.ViewModels
             {
                 IsLoading = true;
                 var technicians = await _context.Technicians
-                    .Include(t => t.Allocations)
+                    //.Include(t => t.Allocations)
                     .ToListAsync();
 
                 // Update any existing job tasks with technician information
