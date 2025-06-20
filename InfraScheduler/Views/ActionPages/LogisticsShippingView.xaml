@@ -1,0 +1,90 @@
+<UserControl x:Class="InfraScheduler.Views.LogisticsShippingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="1000">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#9C27B0" Padding="15">
+            <TextBlock Text="Logistics Shipping - Mark Batches as Shipped" 
+                       Foreground="White" FontSize="18" FontWeight="Bold"/>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Batch Selection Panel -->
+            <Border Grid.Column="0" Background="#F5F5F5" CornerRadius="5" Padding="15" Margin="0,0,15,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Ready to Ship Batches:" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <ComboBox Grid.Row="1" x:Name="BatchesComboBox" 
+                              ItemsSource="{Binding ReadyToShipBatches}"
+                              SelectedItem="{Binding SelectedBatch}"
+                              DisplayMemberPath="Id"
+                              Margin="0,0,0,10"
+                              Padding="5"/>
+
+                    <TextBlock Grid.Row="2" Text="Batch Details:" FontWeight="Bold" Margin="0,10,0,5"/>
+
+                    <StackPanel Grid.Row="3" Margin="0,0,0,15">
+                        <TextBlock Text="{Binding SelectedBatch.Job.Name}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedBatch.Job.Site.SiteName}" Margin="0,5,0,0"/>
+                        <TextBlock Text="{Binding SelectedBatch.Status}" Margin="0,5,0,0"/>
+                        <TextBlock Text="{Binding SelectedBatch.Lines.Count, StringFormat='Lines: {0}'}" Margin="0,5,0,0"/>
+                    </StackPanel>
+
+                    <Button Grid.Row="5" Content="Mark as Shipped" 
+                            Command="{Binding MarkShippedCommand}"
+                            Background="#4CAF50" Foreground="White"
+                            Padding="10" FontWeight="Bold"/>
+                </Grid>
+            </Border>
+
+            <!-- Equipment Lines Panel -->
+            <Border Grid.Column="1" Background="#F5F5F5" CornerRadius="5" Padding="15">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Equipment Lines to Ship:" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                    <DataGrid Grid.Row="1" x:Name="EquipmentLinesDataGrid"
+                              ItemsSource="{Binding EquipmentLines}"
+                              AutoGenerateColumns="False" IsReadOnly="True"
+                              Margin="0,0,0,10">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Equipment Type" Binding="{Binding EquipmentType.Name}" Width="200"/>
+                            <DataGridTextColumn Header="Planned Qty" Binding="{Binding PlannedQty}" Width="100"/>
+                            <DataGridTextColumn Header="Received Qty" Binding="{Binding ReceivedQty}" Width="100"/>
+                            <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="120"/>
+                            <DataGridTextColumn Header="Received Date" Binding="{Binding ReceivedDate}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl> 

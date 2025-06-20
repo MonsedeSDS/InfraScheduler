@@ -3,35 +3,50 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:InfraScheduler.Views"
+        xmlns:local="clr-namespace:InfraScheduler.Views"
         mc:Ignorable="d"
-        Title="InfraScheduler"
-        Width="1280"
-        Height="720"
-        MinWidth="1280"
-        MaxWidth="1280"
-        MinHeight="720"
-        MaxHeight="720"
+        Title="InfraScheduler - Infrastructure Management System"
+        Width="1400"
+        Height="900"
+        MinWidth="1200"
+        MinHeight="700"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize"
-        SizeToContent="Manual">
+        ResizeMode="CanResize"
+        Background="#FAFAFA"
+        FontFamily="Segoe UI">
+    
+    <Window.Resources>
+        <!-- Window-specific styles -->
+        <Style x:Key="WindowTitleStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource PrimaryFont}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="280" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Background="LightGray" Margin="10">
-            <Button Content="Clients" Margin="0,5" Command="{Binding ShowClientViewCommand}" />
-            <Button Content="Subcontractors" Margin="0,5" Command="{Binding ShowSubcontractorViewCommand}" />
-            <Button Content="Sites" Margin="0,5" Command="{Binding ShowSiteViewCommand}" />
-            <Button Content="Technicians" Margin="0,5" Command="{Binding ShowTechnicianViewCommand}" />
-            <Button Content="Materials" Margin="0,5" Command="{Binding ShowMaterialViewCommand}" />
-            <Button Content="Tools" Margin="0,5" Command="{Binding ShowToolViewCommand}" />
-            <Button Content="Jobs" Margin="0,5" Command="{Binding ShowJobViewCommand}" />
-            <Button Content="Job Tasks" Margin="0,5" Command="{Binding ShowJobTaskViewCommand}" />
-            <Button Content="Users" Margin="0,5" Command="{Binding ShowUserViewCommand}" />
-            <Button Content="Transactions" Margin="0,5" Command="{Binding ShowFinancialTransactionViewCommand}" />
-            <Button Content="Activity Log" Margin="0,5" Command="{Binding ShowActivityLogViewCommand}" />
-        </StackPanel>
-        <ContentControl Grid.Column="1" Content="{Binding CurrentView}" />
+        
+        <!-- Navigation Panel with Windows 10 styling -->
+        <Border Grid.Column="0" 
+                Background="White" 
+                BorderBrush="#E0E0E0" 
+                BorderThickness="0,0,1,0">
+            <views:NavigationView />
+        </Border>
+        
+        <!-- Content Area with Windows 10 styling -->
+        <Border Grid.Column="1" 
+                Background="#FAFAFA" 
+                Margin="0">
+            <ContentControl Content="{Binding CurrentView}" 
+                           Margin="0"/>
+        </Border>
     </Grid>
 </Window> 

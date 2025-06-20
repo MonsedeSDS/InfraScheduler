@@ -1,4 +1,5 @@
 ﻿using InfraScheduler.Models;
+using InfraScheduler.Models.EquipmentManagement;
 using Microsoft.EntityFrameworkCore;
 
 namespace InfraScheduler.Data
@@ -20,6 +21,17 @@ namespace InfraScheduler.Data
         public DbSet<ToolCategory> ToolCategories { get; set; }
         public DbSet<ToolAssignment> ToolAssignments { get; set; }
         public DbSet<ToolMaintenance> ToolMaintenances { get; set; }
+        
+        // Equipment Management DbSets
+        public DbSet<Equipment> Equipment { get; set; }
+        public DbSet<EquipmentCategory> EquipmentCategories { get; set; }
+        public DbSet<EquipmentBatch> EquipmentBatches { get; set; }
+        public DbSet<EquipmentLine> EquipmentLines { get; set; }
+        public DbSet<EquipmentDiscrepancy> EquipmentDiscrepancies { get; set; }
+        public DbSet<EquipmentInventoryRecord> EquipmentInventoryRecords { get; set; }
+        public DbSet<SiteEquipmentLedger> SiteEquipmentLedgers { get; set; }
+        public DbSet<SiteEquipmentSnapshot> SiteEquipmentSnapshots { get; set; }
+        
         public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
         public DbSet<JobTaskTechnician> JobTaskTechnicians { get; set; }
@@ -29,6 +41,8 @@ namespace InfraScheduler.Data
         public DbSet<MaterialRequirement> MaterialRequirements => Set<MaterialRequirement>();
         public DbSet<TechnicianAssignment> TechnicianAssignments => Set<TechnicianAssignment>();
         public DbSet<ToolMaintenance> ToolMaintenance => Set<ToolMaintenance>();
+        public DbSet<JobTaskEquipmentLine> JobTaskEquipmentLines { get; set; }
+        public DbSet<JobRequirement> JobRequirements { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -115,6 +129,102 @@ namespace InfraScheduler.Data
                 .HasForeignKey(m => m.ToolId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Configure Equipment relationships
+            modelBuilder.Entity<Equipment>()
+                .HasOne(e => e.Category)
+                .WithMany(c => c.Equipment)
+                .HasForeignKey(e => e.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Equipment>()
+                .HasOne(e => e.AssignedToJob)
+                .WithMany()
+                .HasForeignKey(e => e.AssignedToJobId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Equipment>()
+                .HasOne(e => e.AssignedToTechnician)
+                .WithMany()
+                .HasForeignKey(e => e.AssignedToTechnicianId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure EquipmentBatch relationships
+            modelBuilder.Entity<EquipmentBatch>()
+                .HasMany(b => b.Lines)
+                .WithOne(l => l.Batch)
+                .HasForeignKey(l => l.BatchId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configure EquipmentLine relationships
+            modelBuilder.Entity<EquipmentLine>()
+                .HasMany(l => l.Discrepancies)
+                .WithOne(d => d.Line)
+                .HasForeignKey(d => d.LineId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EquipmentLine>()
+                .HasOne(l => l.EquipmentType)
+                .WithMany(e => e.EquipmentLines)
+                .HasForeignKey(l => l.EquipmentTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure EquipmentInventoryRecord relationships
+            modelBuilder.Entity<EquipmentInventoryRecord>()
+                .HasOne(r => r.EquipmentType)
+                .WithMany(e => e.InventoryRecords)
+                .HasForeignKey(r => r.EquipmentTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<EquipmentInventoryRecord>()
+                .HasOne(r => r.Site)
+                .WithMany()
+                .HasForeignKey(r => r.SiteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure SiteEquipmentLedger relationships
+            modelBuilder.Entity<SiteEquipmentLedger>()
+                .HasOne(l => l.Site)
+                .WithMany()
+                .HasForeignKey(l => l.SiteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SiteEquipmentLedger>()
+                .HasOne(l => l.EquipmentType)
+                .WithMany(e => e.LedgerEntries)
+                .HasForeignKey(l => l.EquipmentTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SiteEquipmentLedger>()
+                .HasOne(l => l.SourceJob)
+                .WithMany()
+                .HasForeignKey(l => l.SourceJobId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SiteEquipmentLedger>()
+                .HasOne(l => l.Batch)
+                .WithMany()
+                .HasForeignKey(l => l.BatchId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SiteEquipmentLedger>()
+                .HasOne(l => l.Line)
+                .WithMany()
+                .HasForeignKey(l => l.LineId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure SiteEquipmentSnapshot relationships
+            modelBuilder.Entity<SiteEquipmentSnapshot>()
+                .HasOne(s => s.Site)
+                .WithMany()
+                .HasForeignKey(s => s.SiteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SiteEquipmentSnapshot>()
+                .HasOne(s => s.EquipmentType)
+                .WithMany(e => e.SnapshotEntries)
+                .HasForeignKey(s => s.EquipmentTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<TaskDependency>()
                 .HasIndex(t => new { t.ParentTaskId, t.PrerequisiteTaskId })
                 .IsUnique();
@@ -191,6 +301,40 @@ namespace InfraScheduler.Data
                 new ToolCategory { Id = 3, Name = "Testing Equipment", Description = "Diagnostic and testing tools" },
                 new ToolCategory { Id = 4, Name = "Safety Equipment", Description = "Personal protective equipment" }
             );
+
+            // Seed initial equipment categories
+            modelBuilder.Entity<EquipmentCategory>().HasData(
+                new EquipmentCategory { Id = 1, Name = "Heavy Machinery", Description = "Large construction and industrial equipment" },
+                new EquipmentCategory { Id = 2, Name = "Vehicles", Description = "Transportation and utility vehicles" },
+                new EquipmentCategory { Id = 3, Name = "Generators", Description = "Power generation equipment" },
+                new EquipmentCategory { Id = 4, Name = "Communication Equipment", Description = "Telecommunications and networking equipment" }
+            );
+
+            // Configure JobTaskEquipmentLine relationships
+            modelBuilder.Entity<JobTaskEquipmentLine>()
+                .HasOne(jtel => jtel.JobTask)
+                .WithMany(jt => jt.JobTaskEquipmentLines)
+                .HasForeignKey(jtel => jtel.JobTaskId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<JobTaskEquipmentLine>()
+                .HasOne(jtel => jtel.EquipmentLine)
+                .WithMany(el => el.JobTaskEquipmentLines)
+                .HasForeignKey(jtel => jtel.EquipmentLineId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Configure JobRequirement relationships
+            modelBuilder.Entity<JobRequirement>()
+                .HasOne(r => r.Job)
+                .WithMany(j => j.Requirements)
+                .HasForeignKey(r => r.JobId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<JobRequirement>()
+                .HasOne(r => r.EquipmentType)
+                .WithMany()
+                .HasForeignKey(r => r.EquipmentTypeId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

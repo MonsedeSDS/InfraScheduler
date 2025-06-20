@@ -418,32 +418,7 @@ namespace InfraScheduler.ViewModels
                 MessageBox.Show(ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-        [RelayCommand]
-        private void EditCertifications()
-        {
-            try
-            {
-                var window = new EditCertificationsWindow
-                {
-                    Owner = Application.Current.MainWindow
-                };
-                window.DataContext = new EditCertificationsViewModel(_context, window, SelectedCertifications);
-                
-                if (window.ShowDialog() == true)
-                {
-                    // Refresh certifications after editing
-                    LoadAvailableCertifications();
-                    OnPropertyChanged(nameof(SelectedCertifications));
-                }
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = $"Error editing certifications: {ex.Message}";
-                MessageBox.Show(ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
+            
         private bool ValidateTechnicianData()
         {
             if (string.IsNullOrWhiteSpace(FirstName))

@@ -32,6 +32,9 @@ namespace InfraScheduler.Models
 
         public virtual ICollection<JobTask> Tasks { get; set; }
 
+        // Navigation property for job requirements
+        public virtual ICollection<JobRequirement> Requirements { get; set; } = new List<JobRequirement>();
+
         [ForeignKey("Site")]
         public int SiteId { get; set; }
         public Site Site { get; set; } = null!;

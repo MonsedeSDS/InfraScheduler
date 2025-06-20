@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using InfraScheduler.Models;
 using InfraScheduler.Data;
 using InfraScheduler.Services;
+using InfraScheduler.Views.LandingViews;
 
 namespace InfraScheduler.ViewModels
 {
@@ -82,6 +83,15 @@ namespace InfraScheduler.ViewModels
         public JobTaskViewModel JobTaskViewModel => _jobTaskViewModel;
 
         public ICommand LoadDataCommand { get; }
+        
+        // Landing Page Commands
+        public ICommand ShowMainLandingCommand { get; }
+        public ICommand ShowJobManagementLandingCommand { get; }
+        public ICommand ShowEquipmentManagementLandingCommand { get; }
+        public ICommand ShowSiteManagementLandingCommand { get; }
+        public ICommand ShowTechnicianManagementLandingCommand { get; }
+        
+        // Existing Navigation Commands
         public ICommand ShowClientViewCommand { get; }
         public ICommand ShowSubcontractorViewCommand { get; }
         public ICommand ShowSiteViewCommand { get; }
@@ -96,6 +106,12 @@ namespace InfraScheduler.ViewModels
         public ICommand ShowActivityLogViewCommand { get; }
         public ICommand ShowUserViewCommand { get; }
         public ICommand ShowToolViewCommand { get; }
+        public ICommand ShowEquipmentViewCommand { get; }
+        public ICommand ShowWorkflowDashboardViewCommand { get; }
+        public ICommand ShowEquipmentCategoryViewCommand { get; }
+        public ICommand ShowJobAcceptanceViewCommand { get; }
+        public ICommand ShowJobCloseOutViewCommand { get; }
+        public ICommand ShowSiteEquipmentInventoryViewCommand { get; }
 
         public NavigationViewModel(InfraSchedulerContext context, IServiceProvider serviceProvider)
         {
@@ -105,7 +121,16 @@ namespace InfraScheduler.ViewModels
             _serviceProvider = serviceProvider;
 
             LoadDataCommand = new AsyncRelayCommand(LoadDataAsync);
-            CurrentView = new ClientView(new ClientViewModel(context));
+            
+            // Start with Main Landing Page
+            CurrentView = new MainLandingView(new MainLandingViewModel(context, serviceProvider));
+
+            // Initialize landing page commands
+            ShowMainLandingCommand = CreateLandingCommand<MainLandingView, MainLandingViewModel>();
+            ShowJobManagementLandingCommand = CreateLandingCommand<JobManagementLandingView, JobManagementLandingViewModel>();
+            ShowEquipmentManagementLandingCommand = CreateLandingCommand<EquipmentManagementLandingView, EquipmentManagementLandingViewModel>();
+            ShowSiteManagementLandingCommand = CreateLandingCommand<SiteManagementLandingView, SiteManagementLandingViewModel>();
+            ShowTechnicianManagementLandingCommand = CreateLandingCommand<TechnicianManagementLandingView, TechnicianManagementLandingViewModel>();
 
             // Initialize navigation commands
             ShowClientViewCommand = CreateNavigationCommand<ClientView>();
@@ -119,12 +144,71 @@ namespace InfraScheduler.ViewModels
             ShowJobTaskViewCommand = CreateNavigationCommand<JobTaskView>();
             ShowTaskDependencyViewCommand = CreateNavigationCommand<TaskDependencyView>();
             ShowFinancialTransactionViewCommand = CreateNavigationCommand<FinancialTransactionView>();
-            ShowActivityLogViewCommand = CreateNavigationCommand<ActivityLogView>();
             ShowUserViewCommand = CreateNavigationCommand<UserView>();
             ShowToolViewCommand = CreateNavigationCommand<ToolView>();
+            ShowEquipmentViewCommand = CreateNavigationCommand<EquipmentView>();
+            ShowWorkflowDashboardViewCommand = CreateNavigationCommand<WorkflowDashboardView>();
+            ShowEquipmentCategoryViewCommand = CreateNavigationCommand<EquipmentCategoryView>();
+            ShowJobAcceptanceViewCommand = CreateNavigationCommand<JobAcceptanceView>();
+            ShowJobCloseOutViewCommand = CreateNavigationCommand<JobCloseOutView>();
+            ShowSiteEquipmentInventoryViewCommand = CreateNavigationCommand<SiteEquipmentInventoryView>();
         }
 
         public NavigationViewModel() : this(App.Db, App.ServiceProvider) { }
+
+        private ICommand CreateLandingCommand<TView, TViewModel>() 
+            where TView : class 
+            where TViewModel : class
+        {
+            return new AsyncRelayCommand(async () =>
+            {
+                try
+                {
+                    var viewModel = _serviceProvider.GetRequiredService<TViewModel>();
+                    var view = _serviceProvider.GetRequiredService<TView>();
+                    
+                    // Set the DataContext for UserControl views
+                    if (view is System.Windows.Controls.UserControl userControl)
+                    {
+                        userControl.DataContext = viewModel;
+                    }
+                    // Set the DataContext for Window views (fallback)
+                    else if (view is System.Windows.Window window)
+                    {
+                        window.DataContext = viewModel;
+                    }
+                    
+                    CurrentView = view;
+                }
+                catch (Exception ex)
+                {
+                    // Fallback: create instances directly
+                    try
+                    {
+                        var viewModel = Activator.CreateInstance<TViewModel>();
+                        var view = Activator.CreateInstance<TView>();
+                        
+                        // Set the DataContext for UserControl views
+                        if (view is System.Windows.Controls.UserControl userControl)
+                        {
+                            userControl.DataContext = viewModel;
+                        }
+                        // Set the DataContext for Window views (fallback)
+                        else if (view is System.Windows.Window window)
+                        {
+                            window.DataContext = viewModel;
+                        }
+                        
+                        CurrentView = view;
+                    }
+                    catch (Exception fallbackEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error navigating to landing page {typeof(TView).Name}: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Fallback error: {fallbackEx.Message}");
+                    }
+                }
+            });
+        }
 
         private ICommand CreateNavigationCommand<T>() where T : class
         {

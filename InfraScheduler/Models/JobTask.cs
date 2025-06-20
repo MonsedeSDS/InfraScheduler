@@ -53,6 +53,9 @@ namespace InfraScheduler.Models
 
         public DateTime? CompletedAt { get; set; }
 
+        // Navigation property for equipment lines
+        public virtual ICollection<JobTaskEquipmentLine> JobTaskEquipmentLines { get; set; } = new List<JobTaskEquipmentLine>();
+
         // Alias for Name to maintain compatibility
         [NotMapped]
         public string TaskName
