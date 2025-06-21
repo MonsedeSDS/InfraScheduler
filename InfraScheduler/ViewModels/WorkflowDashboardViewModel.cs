@@ -2,6 +2,8 @@ using InfraScheduler.Commands;
 using InfraScheduler.Data;
 using InfraScheduler.Services;
 using InfraScheduler.Views;
+using InfraScheduler.Delivery.ViewModels;
+using InfraScheduler.Delivery.Views;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.ObjectModel;
@@ -184,7 +186,8 @@ namespace InfraScheduler.ViewModels
             try
             {
                 var jobTaskViewModel = new JobTaskViewModel(_context);
-                var jobTaskView = new JobTaskView(jobTaskViewModel);
+                var jobTaskView = new JobTaskView();
+                jobTaskView.DataContext = jobTaskViewModel;
                 
                 var window = new Window
                 {

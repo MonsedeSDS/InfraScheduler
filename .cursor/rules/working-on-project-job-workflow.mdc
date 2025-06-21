@@ -1,0 +1,17 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+1. You can read the entire code base 
+2. If you need to edit a file, edit the parts that require editing, do not delete and rewrite  
+3. Make sure to check existing viewmodels and properties that could be leveraged before creating new viewmodels and properties
+4. Be careful not to create "XXXX does not exist in the current context" errors
+5. Always ask what design must be used for a view before creating one 
+
+6. Always ask for confirmation if you want to alter the design of a page previously created 
+7. Always ask me before you build 
+8. If the build fails, stop and let me know 
+
+
+9. After you process my request, always clearly check you processed the request in full and you did not forget a part of my request

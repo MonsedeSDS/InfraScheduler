@@ -10,6 +10,7 @@ namespace InfraScheduler.Data
 
         public DbSet<Client> Clients { get; set; }
         public DbSet<Subcontractor> Subcontractors { get; set; }
+        public DbSet<Project> Projects { get; set; }
         public DbSet<Job> Jobs { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<SiteOwner> SiteOwners { get; set; }
@@ -34,6 +35,7 @@ namespace InfraScheduler.Data
         
         public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
         public DbSet<ActivityLog> ActivityLogs { get; set; }
+        public DbSet<InstallationLog> InstallationLogs { get; set; }
         public DbSet<JobTaskTechnician> JobTaskTechnicians { get; set; }
         public DbSet<TaskDependency> TaskDependencies { get; set; }
         public DbSet<Certification> Certifications { get; set; }

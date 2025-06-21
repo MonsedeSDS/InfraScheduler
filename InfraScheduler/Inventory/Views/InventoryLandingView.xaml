@@ -1,0 +1,271 @@
+<UserControl x:Class="InfraScheduler.Inventory.Views.InventoryLandingView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InfraScheduler.Inventory.Views"
+        mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/InfraScheduler;component/FluentColors.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Button Style -->
+            <Style x:Key="LandingTileButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="16"/>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                Margin="{TemplateBinding Padding}"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Hyperlink Style -->
+            <Style x:Key="NavigationHyperlinkStyle" TargetType="Hyperlink">
+                <Setter Property="TextDecorations" Value="None"/>
+                <Setter Property="Foreground" Value="#0078D4"/>
+            </Style>
+
+            <!-- Search Box Style -->
+            <Style x:Key="SearchBoxStyle" TargetType="TextBox">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Padding" Value="8,6"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <!-- Navigation Path -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Breadcrumb -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16,16,16,0">
+            <TextBlock Text="Home" Foreground="#0078D4" Cursor="Hand"/>
+            <TextBlock Text=" > " Foreground="#666666"/>
+            <TextBlock Text="Inventory Management" Foreground="#666666"/>
+        </StackPanel>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="1" Margin="16,8,16,16">
+            <TextBlock Text="{Binding SectionTitle}" 
+                      FontSize="24" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding SectionDescription}" 
+                      FontSize="14" Foreground="#666666"
+                      Margin="0,4,0,12"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0" Text="Search inventory options" 
+                         Height="32" Padding="8,6"
+                         BorderBrush="#E0E0E0"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- Content Grid -->
+        <ScrollViewer Grid.Row="2" Margin="16,0,16,16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- First Row -->
+                <Grid Grid.Row="0" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Tools Management -->
+                    <Grid Grid.Column="0" Margin="0,0,8,0" Background="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8" Cursor="Hand">
+                            <StackPanel.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding NavigateToToolsManagementCommand}"/>
+                            </StackPanel.InputBindings>
+                            <TextBlock Text="Tools Management" FontWeight="SemiBold" Cursor="Hand" Foreground="#0078D4">
+                                <TextBlock.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding NavigateToToolsManagementCommand}"/>
+                                </TextBlock.InputBindings>
+                            </TextBlock>
+                            <TextBlock Text="Manage tools inventory and assignments" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Equipment Management -->
+                    <Grid Grid.Column="1" Margin="8,0,8,0" Background="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8" Cursor="Hand">
+                            <StackPanel.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding NavigateToEquipmentManagementCommand}"/>
+                            </StackPanel.InputBindings>
+                            <TextBlock Text="Equipment Management" FontWeight="SemiBold"/>
+                            <TextBlock Text="Manage equipment inventory and tracking" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Consumables Management -->
+                    <Grid Grid.Column="2" Margin="8,0,0,0" Background="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8" Cursor="Hand">
+                            <StackPanel.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding NavigateToConsumablesManagementCommand}"/>
+                            </StackPanel.InputBindings>
+                            <TextBlock Text="Consumables Management" FontWeight="SemiBold"/>
+                            <TextBlock Text="Manage consumables inventory and stock levels" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <!-- Second Row -->
+                <Grid Grid.Row="1" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Items Schedules -->
+                    <Grid Grid.Column="0" Margin="0,0,8,0" Background="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8" Cursor="Hand">
+                            <StackPanel.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding NavigateToItemSchedulesCommand}"/>
+                            </StackPanel.InputBindings>
+                            <TextBlock Text="Items Schedules" FontWeight="SemiBold"/>
+                            <TextBlock Text="View schedules for any item from all databases (history, current, planned)" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Digital Warehouse -->
+                    <Grid Grid.Column="1" Margin="8,0,8,0" Background="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8" Cursor="Hand">
+                            <StackPanel.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding NavigateToDigitalWarehouseCommand}"/>
+                            </StackPanel.InputBindings>
+                            <TextBlock Text="Digital Warehouse" FontWeight="SemiBold"/>
+                            <TextBlock Text="Select warehouse type (Customer, Site, SDS) and view items by status" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Procurement -->
+                    <Grid Grid.Column="2" Margin="8,0,0,0" Background="White" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8" Cursor="Hand">
+                            <TextBlock Text="Procurement" FontWeight="SemiBold"/>
+                            <TextBlock Text="Manage purchase orders and supplier relationships" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <!-- Third Row -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Stock Control -->
+                    <Grid Grid.Column="0" Margin="0,0,8,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Stock Control" FontWeight="SemiBold"/>
+                            <TextBlock Text="Monitor stock levels and automated reordering" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Settings -->
+                    <Grid Grid.Column="1" Margin="8,0,8,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Settings" FontWeight="SemiBold"/>
+                            <TextBlock Text="Configure inventory management settings" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Help -->
+                    <Grid Grid.Column="2" Margin="8,0,0,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Help" FontWeight="SemiBold"/>
+                            <TextBlock Text="Get support and documentation" 
+                                     Foreground="#666666"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl> 

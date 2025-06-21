@@ -8,7 +8,7 @@ namespace InfraScheduler
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new NavigationViewModel();
+            // DataContext will be set by App.xaml.cs
         }
 
         public MainWindow(NavigationViewModel vm)

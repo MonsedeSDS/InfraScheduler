@@ -1,0 +1,250 @@
+<UserControl x:Class="InfraScheduler.Core.Views.MainLandingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             FontFamily="Segoe UI">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/InfraScheduler;component/FluentColors.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Button Style -->
+            <Style x:Key="LandingTileButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="Padding" Value="16"/>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                Margin="{TemplateBinding Padding}"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Hyperlink Style -->
+            <Style x:Key="NavigationHyperlinkStyle" TargetType="Hyperlink">
+                <Setter Property="TextDecorations" Value="None"/>
+                <Setter Property="Foreground" Value="#0078D4"/>
+            </Style>
+
+            <!-- Search Box Style -->
+            <Style x:Key="SearchBoxStyle" TargetType="TextBox">
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Padding" Value="8,6"/>
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="White">
+        <!-- Navigation Path -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Breadcrumb -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16,16,16,0">
+            <TextBlock Text="Home" Foreground="#0078D4" Cursor="Hand"/>
+            <TextBlock Text=" > " Foreground="#666666"/>
+            <TextBlock Text="Delivery Management" Foreground="#666666"/>
+        </StackPanel>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="1" Margin="16,8,16,16">
+            <TextBlock Text="{Binding SectionTitle}" 
+                      FontSize="24" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding SectionDescription}" 
+                      FontSize="14" Foreground="#666666"
+                      Margin="0,4,0,12"/>
+            <TextBox Text="Find a setting" 
+                     Height="32" Padding="8,6"
+                     BorderBrush="#E0E0E0"/>
+        </StackPanel>
+
+        <!-- Content Grid -->
+        <ScrollViewer Grid.Row="2" Margin="16,0,16,16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- First Row -->
+                <Grid Grid.Row="0" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Delivery -->
+                    <Grid Grid.Column="0" Margin="0,0,8,0" Background="White" Cursor="Hand"
+                          MouseLeftButtonDown="DeliveryGrid_MouseLeftButtonDown">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Delivery Management" FontWeight="SemiBold"/>
+                            <TextBlock Text="Add, Manage Projects" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Inventory -->
+                    <Grid Grid.Column="1" Margin="8,0,8,0" Background="White" Cursor="Hand"
+                          MouseLeftButtonDown="InventoryGrid_MouseLeftButtonDown">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Inventory Management" FontWeight="SemiBold"/>
+                            <TextBlock Text="Manage Warehouse, Equipment" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Database -->
+                    <Grid Grid.Column="2" Margin="8,0,0,0" Background="White" Cursor="Hand"
+                          MouseLeftButtonDown="DatabaseGrid_MouseLeftButtonDown">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Knowledge Centre" FontWeight="SemiBold"/>
+                            <TextBlock Text="Manage Databases" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <!-- Row 2 -->
+                <Grid Grid.Row="1" Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Admin -->
+                    <Grid Grid.Column="0" Margin="0,0,8,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Admin Management" FontWeight="SemiBold"/>
+                            <TextBlock Text="Handle Admin Workstreams" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Accounts -->
+                    <Grid Grid.Column="1" Margin="8,0,8,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Account Management" FontWeight="SemiBold"/>
+                            <TextBlock Text="Set up your Profile" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Settings -->
+                    <Grid Grid.Column="2" Margin="8,0,0,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Settings" FontWeight="SemiBold"/>
+                            <TextBlock Text="Configure InfraScheduler" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+
+                <!-- Third Row -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Help -->
+                    <Grid Grid.Column="0" Margin="0,0,8,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Help" FontWeight="SemiBold"/>
+                            <TextBlock Text="Documentation" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Settings -->
+                    <Grid Grid.Column="1" Margin="8,0,8,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Settings" FontWeight="SemiBold"/>
+                            <TextBlock Text="Configure job management settings" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Help -->
+                    <Grid Grid.Column="2" Margin="8,0,0,0" Background="White" Cursor="Hand" Opacity="0.5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle Grid.Column="0" Fill="#0078D4"/>
+                        <StackPanel Grid.Column="1" Margin="12,8,8,8">
+                            <TextBlock Text="Help" FontWeight="SemiBold"/>
+                            <TextBlock Text="Get support and documentation" 
+                                     Foreground="#666666" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl> 

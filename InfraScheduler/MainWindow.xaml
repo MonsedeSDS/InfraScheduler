@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:InfraScheduler.Views"
+        xmlns:coreViews="clr-namespace:InfraScheduler.Core.Views"
         xmlns:local="clr-namespace:InfraScheduler.Views"
         mc:Ignorable="d"
         Title="InfraScheduler - Infrastructure Management System"
@@ -38,7 +38,7 @@
                 Background="White" 
                 BorderBrush="#E0E0E0" 
                 BorderThickness="0,0,1,0">
-            <views:NavigationView />
+            <coreViews:NavigationView />
         </Border>
         
         <!-- Content Area with Windows 10 styling -->
@@ -46,7 +46,7 @@
                 Background="#FAFAFA" 
                 Margin="0">
             <ContentControl Content="{Binding CurrentView}" 
-                           Margin="0"/>
+                           Margin="0" />
         </Border>
     </Grid>
 </Window> 

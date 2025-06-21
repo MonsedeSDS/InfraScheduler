@@ -52,6 +52,15 @@ namespace InfraScheduler.Models
         [StringLength(50)]
         public string JobType { get; set; }
 
+        // Project relationship
+        [ForeignKey("Project")]
+        public int? ProjectId { get; set; }
+        public virtual Project? Project { get; set; }
+
+        // Customer PO reference
+        [StringLength(100)]
+        public string PONumber { get; set; } = string.Empty;
+
         [NotMapped]
         public string JobName
         {
